@@ -82,16 +82,21 @@
       noBtn.style.top = y + "px";
     }
 
-    function evade() {
-      noCount = Math.min(noCount + 1, noTexts.length - 1);
-      noBtn.textContent = noTexts[noCount];
+   function evade() {
+  noCount = Math.min(noCount + 1, noTexts.length - 1);
+  noBtn.textContent = noTexts[noCount];
 
-      // Make YES slightly bigger each time
-      const scale = 1 + noCount * 0.14;
-      yesBtn.style.transform = `scale(${scale})`;
+  // Make YES bigger
+  const yesScale = 1 + noCount * 0.14;
+  yesBtn.style.transform = `scale(${yesScale})`;
 
-      moveNoButton();
-    }
+  // Make NO smaller
+  const noScale = Math.max(0.4, 1 - noCount * 0.12);
+  noBtn.style.transform = `scale(${noScale})`;
+
+  moveNoButton();
+}
+
 
     // Desktop: hover. Mobile: touchstart.
     noBtn.addEventListener("mouseenter", evade);
