@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>YAY!!</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: linear-gradient(135deg, #ffc3a0, #ffafbd);
+      overflow: hidden;
+    }
+    .box {
+      background: rgba(255,255,255,0.92);
+      border-radius: 24px;
+      padding: 34px 22px 28px;
+      text-align: center;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+      width: min(560px, 92vw);
+    }
+    h1 { margin: 0 0 8px; color: #ff4757; font-size: 34px; letter-spacing: -0.4px; }
+    p { margin: 0; color: #222; font-size: 18px; }
+    .heart { position: fixed; top: -22px; font-size: 22px; animation: fall linear forwards; pointer-events: none; }
+    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0.95; } }
+    .btn {
+      display: inline-block;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.06);
+      color: #111;
+      text-decoration: none;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1 id="msg">YAY!! 💖</h1>
+    <p id="sub">You just made my day 🥹</p>
+    <a class="btn" href="./">Back</a>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const name = (params.get("name") || "").trim();
+    if (name) {
+      document.getElementById("msg").textContent = `YAY, ${name}!! 💖`;
+      document.getElementById("sub").textContent = "See you soon 😌";
+    }
+
+    function spawnHeart() {
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = ["💘","❤️","💖","💕"][Math.floor(Math.random()*4)];
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.animationDuration = (2.6 + Math.random()*2.8) + "s";
+      h.style.opacity = (0.55 + Math.random()*0.45).toFixed(2);
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 6500);
+    }
+    setInterval(spawnHeart, 120);
+  </script>
+</body>
+</html>

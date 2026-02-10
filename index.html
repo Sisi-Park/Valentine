@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Will you be my Valentine?</title>
+  <style>
+    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: linear-gradient(135deg, #ffafbd, #ffc3a0);
+    }
+    .card {
+      width: min(560px, 92vw);
+      background: rgba(255,255,255,0.92);
+      border-radius: 22px;
+      padding: 30px 22px 24px;
+      box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    h1 { margin: 0 0 10px; font-size: 30px; color: #ff4757; letter-spacing: -0.3px; }
+    p { margin: 0 0 18px; color: #333; font-size: 16px; }
+    .btns { display: flex; gap: 12px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
+    button {
+      border: 0; border-radius: 999px; padding: 12px 18px; font-size: 16px;
+      cursor: pointer; transition: transform .12s ease, box-shadow .12s ease;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active { transform: scale(0.98); }
+    #yes { background: #ff6b6b; color: white; }
+    #no  { background: #f1f3f5; color: #222; position: relative; }
+    .hint { font-size: 12px; opacity: 0.75; margin-top: 16px; }
+    .small { font-size: 12px; opacity: 0.55; margin-top: 6px; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1 id="headline">Will you be my Valentine?</h1>
+    <p id="subline">Be honest 😌</p>
+
+    <div class="btns" id="btnRow">
+      <button id="yes">Yes 💘</button>
+      <button id="no">No</button>
+    </div>
+
+    <div class="hint">Share a custom link like <b>?name=TheirName</b> (example: <b>?name=Jessica</b>)</div>
+    <div class="small">Tip: On phones, the “No” button moves when you try to tap it.</div>
+  </div>
+
+  <script>
+    // Personalize with ?name=Jessica
+    const params = new URLSearchParams(location.search);
+    const name = (params.get("name") || "").trim();
+    const headline = document.getElementById("headline");
+    if (name) headline.textContent = `${name}, will you be my Valentine?`;
+
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const card = document.getElementById("card");
+
+    const noTexts = ["No", "Are you sure?", "Really sure??", "Pls?", "Don't do this 😭", "Ok fine…"];
+    let noCount = 0;
+
+    function clamp(n, min, max) { return Math.min(Math.max(n, min), max); }
+
+    function moveNoButton() {
+      const rect = card.getBoundingClientRect();
+      const padding = 12;
+      const maxX = rect.width - noBtn.offsetWidth - padding;
+      const maxY = rect.height - noBtn.offsetHeight - padding;
+
+      // Keep it inside the card
+      const x = clamp(Math.floor(Math.random() * maxX), padding, maxX);
+      const y = clamp(Math.floor(Math.random() * maxY), padding, maxY);
+
+      noBtn.style.position = "absolute";
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    function evade() {
+      noCount = Math.min(noCount + 1, noTexts.length - 1);
+      noBtn.textContent = noTexts[noCount];
+
+      // Make YES slightly bigger each time
+      const scale = 1 + noCount * 0.14;
+      yesBtn.style.transform = `scale(${scale})`;
+
+      moveNoButton();
+    }
+
+    // Desktop: hover. Mobile: touchstart.
+    noBtn.addEventListener("mouseenter", evade);
+    noBtn.addEventListener("touchstart", (e) => { evade(); }, { passive: true });
+
+    yesBtn.addEventListener("click", () => {
+      const n = name ? encodeURIComponent(name) : "";
+      location.href = `yes.html${n ? `?name=${n}` : ""}`;
+    });
+  </script>
+</body>
+</html>
