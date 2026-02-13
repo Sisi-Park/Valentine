@@ -210,9 +210,12 @@
     }
   });
 
-  const noBtn = document.getElementById("no");
-  const yesBtn = document.getElementById("yes");
-  let count = 0;
+ // ✅ YES button: go to yes.html (keeps ?name=...)
+yesBtn.addEventListener("click", () => {
+  const n = (name || "").trim();
+  const q = n ? `?name=${encodeURIComponent(n)}` : "";
+  window.location.href = `yes.html${q}`;
+});
 
   function moveNo(){
     count++;
