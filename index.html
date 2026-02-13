@@ -21,18 +21,159 @@
       overflow: hidden;
     }
     h1 { margin: 0 0 10px; font-size: 30px; color: #ff4757; letter-spacing: -0.3px; }
-    p { margin: 0 0 18px; color: #333; font-size: 16px; }
+    p { margin: 0 0 16px; color: #333; font-size: 16px; }
+
+    /* Love letter block */
+    .letter-wrap{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:12px;
+      margin: 10px 0 10px;
+    }
+
+    /* Envelope button */
+    .envelope{
+      width: 190px;
+      height: 125px;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      padding: 0;
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .env-body{
+      position:absolute;
+      inset: 0;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.18);
+      overflow:hidden;
+    }
+
+    /* Simple “envelope” look with triangles */
+    .env-body::before{
+      content:"";
+      position:absolute;
+      left:0; right:0; bottom:0;
+      height: 70%;
+      background: linear-gradient(180deg, rgba(255,107,107,0.08), rgba(255,107,107,0.16));
+    }
+    .env-body::after{
+      content:"";
+      position:absolute;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      width: 0; height: 0;
+      border-left: 78px solid transparent;
+      border-right: 78px solid transparent;
+      border-top: 54px solid rgba(255,107,107,0.22);
+    }
+
+    .env-flap{
+      position:absolute;
+      left:0; right:0; top:0;
+      height: 62%;
+      background: rgba(255,107,107,0.22);
+      border-radius: 16px 16px 22px 22px;
+      transform-origin: top center;
+      transform: rotateX(0deg);
+      transition: transform 520ms ease;
+    }
+
+    .env-seal{
+      position:absolute;
+      left: 50%;
+      top: 56%;
+      transform: translate(-50%, -50%);
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      display:grid;
+      place-items:center;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+      transition: transform 260ms ease, opacity 260ms ease;
+    }
+
+    .envelope:hover .env-seal{ transform: translate(-50%, -50%) scale(1.06); }
+    .envelope:active .env-seal{ transform: translate(-50%, -50%) scale(0.98); }
+
+    /* Open state */
+    .envelope.open .env-flap{
+      transform: rotateX(165deg);
+    }
+    .envelope.open .env-seal{
+      transform: translate(-50%, -50%) scale(0.9);
+      opacity: 0.8;
+    }
+
+    /* Letter content */
+    .letter{
+      width: min(420px, 88vw);
+      background: rgba(255,255,255,0.92);
+      border-radius: 18px;
+      padding: 14px 14px 14px;
+      box-shadow: 0 12px 34px rgba(0,0,0,0.14);
+      transform: translateY(-6px);
+      opacity: 0;
+      max-height: 0;
+      overflow: hidden;
+      transition: opacity 380ms ease, max-height 520ms ease, transform 520ms ease;
+    }
+
+    .letter.show{
+      opacity: 1;
+      max-height: 220px;
+      transform: translateY(0);
+    }
+
+    .letter-title{
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #ff4757;
+      letter-spacing: -0.2px;
+    }
+
+    .letter-text{
+      color: #222;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    /* Pop-out hearts */
+    .pop-heart{
+      position: absolute;
+      left: 50%;
+      top: 34px;
+      transform: translateX(-50%);
+      pointer-events: none;
+      animation: popFly 900ms ease forwards;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,0.18));
+    }
+
+    @keyframes popFly{
+      0%   { transform: translate(-50%, 0) scale(0.7); opacity: 0; }
+      20%  { opacity: 1; }
+      100% { transform: translate(calc(-50% + var(--dx)), var(--dy)) scale(1.25); opacity: 0.0; }
+    }
+
     .btns { display: flex; gap: 12px; justify-content: center; margin-top: 12px; flex-wrap: wrap; }
-    button {
+    button.action {
       border: 0; border-radius: 999px; padding: 12px 18px; font-size: 16px;
       cursor: pointer; transition: transform .12s ease, box-shadow .12s ease;
       box-shadow: 0 6px 18px rgba(0,0,0,0.12);
       user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    button:active { transform: scale(0.98); }
+    button.action:active { transform: scale(0.98); }
     #yes { background: #ff6b6b; color: white; }
     #no  { background: #f1f3f5; color: #222; position: relative; }
+
     .hint { font-size: 12px; opacity: 0.75; margin-top: 16px; }
     .small { font-size: 12px; opacity: 0.55; margin-top: 6px; }
   </style>
@@ -42,13 +183,30 @@
     <h1 id="headline">Will you be my Valentine?</h1>
     <p id="subline">Be honest 😌</p>
 
-    <div class="btns" id="btnRow">
-      <button id="yes">Yes 💘</button>
-      <button id="no">No</button>
+    <!-- Love letter (in the middle) -->
+    <div class="letter-wrap">
+      <button class="envelope" id="openLetter" aria-label="Open love letter" type="button">
+        <div class="env-body"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal">💌</div>
+      </button>
+
+      <div class="letter" id="letter">
+        <div class="letter-title">To you,</div>
+        <div class="letter-text" id="letterText">
+          I made this little page because you matter to me.<br />
+          Will you be my Valentine? 💘
+        </div>
+      </div>
     </div>
 
-    <div class="hint"> I made this just for you, Nick💖</div>
-    <div class="small">Please don’t say no 🥹.</div>
+    <div class="btns" id="btnRow">
+      <button class="action" id="yes">Yes 💘</button>
+      <button class="action" id="no">No</button>
+    </div>
+
+    <div class="hint">Share a custom link like <b>?name=TheirName</b> (example: <b>?name=Jessica</b>)</div>
+    <div class="small">Tip: On phones, try tapping “No” 🙂</div>
   </div>
 
   <script>
@@ -73,7 +231,6 @@
       const maxX = rect.width - noBtn.offsetWidth - padding;
       const maxY = rect.height - noBtn.offsetHeight - padding;
 
-      // Keep it inside the card
       const x = clamp(Math.floor(Math.random() * maxX), padding, maxX);
       const y = clamp(Math.floor(Math.random() * maxY), padding, maxY);
 
@@ -82,30 +239,68 @@
       noBtn.style.top = y + "px";
     }
 
-   function evade() {
-  noCount = Math.min(noCount + 1, noTexts.length - 1);
-  noBtn.textContent = noTexts[noCount];
+    // No button: move away AND get smaller each time
+    function evade() {
+      noCount = Math.min(noCount + 1, noTexts.length - 1);
+      noBtn.textContent = noTexts[noCount];
 
-  // Make YES bigger
-  const yesScale = 1 + noCount * 0.14;
-  yesBtn.style.transform = `scale(${yesScale})`;
+      // Make YES bigger
+      const yesScale = 1 + noCount * 0.14;
+      yesBtn.style.transform = `scale(${yesScale})`;
 
-  // Make NO smaller
-  const noScale = Math.max(0.4, 1 - noCount * 0.12);
-  noBtn.style.transform = `scale(${noScale})`;
+      // Make NO smaller (min 0.35x so it doesn't fully vanish)
+      const noScale = Math.max(0.35, 1 - noCount * 0.12);
+      noBtn.style.transform = `scale(${noScale})`;
 
-  moveNoButton();
-}
-
+      moveNoButton();
+    }
 
     // Desktop: hover. Mobile: touchstart.
     noBtn.addEventListener("mouseenter", evade);
-    noBtn.addEventListener("touchstart", (e) => { evade(); }, { passive: true });
+    noBtn.addEventListener("touchstart", () => { evade(); }, { passive: true });
 
     yesBtn.addEventListener("click", () => {
       const n = name ? encodeURIComponent(name) : "";
       location.href = `yes.html${n ? `?name=${n}` : ""}`;
     });
+
+    // Love letter open + hearts burst
+    const openLetterBtn = document.getElementById("openLetter");
+    const letterEl = document.getElementById("letter");
+    let letterOpened = false;
+
+    function burstHearts() {
+      const hearts = ["💖","💘","💕","❤️"];
+      const count = 14;
+
+      for (let i = 0; i < count; i++) {
+        const h = document.createElement("div");
+        h.className = "pop-heart";
+        h.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+
+        const dx = (Math.random() * 220 - 110).toFixed(0) + "px";
+        const dy = (-(Math.random() * 180 + 80)).toFixed(0) + "px";
+        h.style.setProperty("--dx", dx);
+        h.style.setProperty("--dy", dy);
+        h.style.fontSize = (16 + Math.random() * 14).toFixed(0) + "px";
+
+        openLetterBtn.appendChild(h);
+        setTimeout(() => h.remove(), 1000);
+      }
+    }
+
+    openLetterBtn.addEventListener("click", () => {
+      if (letterOpened) return;
+      letterOpened = true;
+
+      openLetterBtn.classList.add("open");
+      burstHearts();
+
+      setTimeout(() => {
+        letterEl.classList.add("show");
+      }, 220);
+    });
   </script>
 </body>
 </html>
+
