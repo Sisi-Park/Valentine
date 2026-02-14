@@ -1,67 +1,123 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>YAY!!</title>
-  <style>
-    :root { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body {
-      margin: 0; min-height: 100vh; display: grid; place-items: center;
-      background: linear-gradient(135deg, #ffc3a0, #ffafbd);
-      overflow: hidden;
-    }
-    .box {
-      background: rgba(255,255,255,0.92);
-      border-radius: 24px;
-      padding: 34px 22px 28px;
-      text-align: center;
-      box-shadow: 0 18px 60px rgba(0,0,0,0.18);
-      width: min(560px, 92vw);
-    }
-    h1 { margin: 0 0 8px; color: #ff4757; font-size: 34px; letter-spacing: -0.4px; }
-    p { margin: 0; color: #222; font-size: 18px; }
-    .heart { position: fixed; top: -22px; font-size: 22px; animation: fall linear forwards; pointer-events: none; }
-    @keyframes fall { to { transform: translateY(110vh) rotate(360deg); opacity: 0.95; } }
-    .btn {
-      display: inline-block;
-      margin-top: 18px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(0,0,0,0.06);
-      color: #111;
-      text-decoration: none;
-      font-size: 14px;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>YAY!!</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#ffc3a0,#ffafbd);
+  font-family:'Quicksand',sans-serif;
+  overflow:hidden;
+  text-align:center;
+}
+
+.box{
+  background:rgba(255,255,255,0.95);
+  border-radius:30px;
+  padding:45px 35px;
+  box-shadow:0 30px 80px rgba(0,0,0,0.25);
+  width:min(560px,92vw);
+  position:relative;
+}
+
+h1{
+  margin:0 0 10px;
+  font-size:42px;
+  color:#ff3e6c;
+}
+
+p{
+  margin:10px 0 25px;
+  font-size:18px;
+  color:#333;
+}
+
+/* Unicorn animation */
+.unicorn{
+  font-size:90px;
+  animation: float 3s ease-in-out infinite;
+  filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
+}
+
+@keyframes float{
+  0%{ transform: translateY(0px);}
+  50%{ transform: translateY(-18px);}
+  100%{ transform: translateY(0px);}
+}
+
+/* Sparkles */
+.sparkle{
+  position:absolute;
+  font-size:20px;
+  animation: sparkle 2s ease-out forwards;
+  pointer-events:none;
+}
+
+@keyframes sparkle{
+  0%{ opacity:1; transform:translateY(0) scale(0.8);}
+  100%{ opacity:0; transform:translateY(-60px) scale(1.4);}
+}
+
+/* Back button */
+.btn{
+  display:inline-block;
+  margin-top:25px;
+  padding:12px 18px;
+  border-radius:999px;
+  background:#ff4d79;
+  color:white;
+  text-decoration:none;
+  font-size:14px;
+}
+</style>
 </head>
+
 <body>
-  <div class="box">
-    <h1 id="msg">YAY!! 💖</h1>
-    <p id="sub">I love you so much Nick
-      Thank you for being in my life. Can't wait to share more sweet moments💖</p>
-    <a class="btn" href="./">Back</a>
-  </div>
 
-  <script>
-    const params = new URLSearchParams(location.search);
-    const name = (params.get("name") || "").trim();
-    if (name) {
-      document.getElementById("msg").textContent = `YAY, ${name}!! 💖`;
-      document.getElementById("sub").textContent = "See you soon 😌";
-    }
+<div class="box">
+  <h1 id="msg">YAY!! 💖</h1>
+  <p id="sub">
+    I love you so much Nick.<br>
+    Thank you for being in my life.
+  </p>
 
-    function spawnHeart() {
-      const h = document.createElement("div");
-      h.className = "heart";
-      h.textContent = ["💘","❤️","💖","💕"][Math.floor(Math.random()*4)];
-      h.style.left = Math.random() * 100 + "vw";
-      h.style.animationDuration = (2.6 + Math.random()*2.8) + "s";
-      h.style.opacity = (0.55 + Math.random()*0.45).toFixed(2);
-      document.body.appendChild(h);
-      setTimeout(() => h.remove(), 6500);
-    }
-    setInterval(spawnHeart, 120);
-  </script>
+  <div class="unicorn">🦄</div>
+
+  <a class="btn" href="index.html">Back</a>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const name = params.get("name");
+
+if(name){
+  document.getElementById("msg").textContent = `YAY, ${name}!! 💖`;
+}
+
+/* Sparkle generator */
+function createSparkle(){
+  const sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+  sparkle.textContent = ["✨","💫","🌟"][Math.floor(Math.random()*3)];
+
+  sparkle.style.left = (Math.random()*100)+"%";
+  sparkle.style.top = "70%";
+
+  document.body.appendChild(sparkle);
+
+  setTimeout(()=> sparkle.remove(),2000);
+}
+
+setInterval(createSparkle,400);
+</script>
+
 </body>
 </html>
